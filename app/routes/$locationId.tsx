@@ -1,15 +1,7 @@
 import { LoaderFunctionArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-
-const dateFormatter = new Intl.DateTimeFormat('id-ID', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'Asia/Jakarta',
-});
-
-const today = new Date();
+import { format, formatDistanceToNow } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 type JadwalResponse = {
   status: boolean;
@@ -33,6 +25,7 @@ type JadwalResponse = {
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const today = new Date();
   const res = await fetch(
     `https://api.myquran.com/v2/sholat/jadwal/${
       params.locationId
@@ -49,18 +42,53 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function Location() {
   const { jadwal } = useLoaderData<typeof loader>();
 
+  const timeLeft = (timeStr: string): string => {
+    const today = new Date();
+    const [hours, minutes] = timeStr.split(':');
+
+    const timeObject = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      Number(hours),
+      Number(minutes)
+    );
+
+    return formatDistanceToNow(timeObject, {
+      includeSeconds: true,
+      addSuffix: true,
+      locale: id,
+    });
+  };
+
   return (
     <>
-      <h2>{dateFormatter.format(today)}</h2>
+      <h2>{format(new Date(), 'EEEE, d MMMM yyyy', { locale: id })}</h2>
       <ul>
-        <li>Imsak: {jadwal.jadwal.imsak}</li>
-        <li>Subuh: {jadwal.jadwal.subuh}</li>
-        <li>Terbit: {jadwal.jadwal.terbit}</li>
-        <li>Dhuha: {jadwal.jadwal.dhuha}</li>
-        <li>Dzuhur: {jadwal.jadwal.dzuhur}</li>
-        <li>Ashar: {jadwal.jadwal.ashar}</li>
-        <li>Maghrib: {jadwal.jadwal.maghrib}</li>
-        <li>Isya: {jadwal.jadwal.isya}</li>
+        <li>
+          Imsak: {jadwal.jadwal.imsak} ({timeLeft(jadwal.jadwal.imsak)})
+        </li>
+        <li>
+          Subuh: {jadwal.jadwal.subuh} ({timeLeft(jadwal.jadwal.subuh)})
+        </li>
+        <li>
+          Terbit: {jadwal.jadwal.terbit} ({timeLeft(jadwal.jadwal.terbit)})
+        </li>
+        <li>
+          Dhuha: {jadwal.jadwal.dhuha} ({timeLeft(jadwal.jadwal.dhuha)})
+        </li>
+        <li>
+          Dzuhur: {jadwal.jadwal.dzuhur} ({timeLeft(jadwal.jadwal.dzuhur)})
+        </li>
+        <li>
+          Ashar: {jadwal.jadwal.ashar} ({timeLeft(jadwal.jadwal.ashar)})
+        </li>
+        <li>
+          Maghrib: {jadwal.jadwal.maghrib} ({timeLeft(jadwal.jadwal.maghrib)})
+        </li>
+        <li>
+          Isya: {jadwal.jadwal.isya} ({timeLeft(jadwal.jadwal.isya)})
+        </li>
       </ul>
     </>
   );
