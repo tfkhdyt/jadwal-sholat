@@ -10,5 +10,6 @@ export const { getSession, commitSession, destroySession } =
       name: '__session',
       path: '/',
       sameSite: 'lax',
+      secrets: [process.env.SESSION_SECRET ?? ''],
     },
   });
