@@ -1,5 +1,10 @@
-import { LoaderFunctionArgs, json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  json,
+  redirect,
+} from '@remix-run/node';
+import { Form, useLoaderData } from '@remix-run/react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -24,8 +29,14 @@ type JadwalResponse = {
   };
 };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const today = new Date();
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  const { searchParams } = new URL(request.url);
+  const dateFromSearchParams = searchParams.get('date');
+
+  const today = dateFromSearchParams
+    ? new Date(dateFromSearchParams)
+    : new Date();
+
   const res = await fetch(
     `https://api.myquran.com/v2/sholat/jadwal/${
       params.locationId
@@ -36,11 +47,46 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     throw json({ error: 'Gagal untuk mengambil data jadwal sholat' });
   }
 
-  return json({ jadwal: data.data });
+  return json({ jadwal: data.data, date: today });
+};
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const { searchParams } = new URL(request.url);
+  const dateFromSearchParams = searchParams.get('date');
+
+  const today = dateFromSearchParams
+    ? new Date(dateFromSearchParams)
+    : new Date();
+
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData) as {
+    _action: 'NEXT_DAY' | 'PREVIOUS_DAY' | 'TODAY';
+  };
+
+  switch (data._action) {
+    case 'NEXT_DAY':
+      return redirect(
+        `/${params.locationId}?date=${format(
+          today.setDate(today.getDate() + 1),
+          'yyyy-MM-dd'
+        )}`
+      );
+    case 'PREVIOUS_DAY':
+      return redirect(
+        `/${params.locationId}?date=${format(
+          today.setDate(today.getDate() - 1),
+          'yyyy-MM-dd'
+        )}`
+      );
+    case 'TODAY':
+      return redirect(`/${params.locationId}`);
+    default:
+      return null;
+  }
 };
 
 export default function Location() {
-  const { jadwal } = useLoaderData<typeof loader>();
+  const { jadwal, date } = useLoaderData<typeof loader>();
 
   const timeLeft = (timeStr: string): string => {
     const today = new Date();
@@ -63,7 +109,19 @@ export default function Location() {
 
   return (
     <>
-      <h2>{format(new Date(), 'EEEE, d MMMM yyyy', { locale: id })}</h2>
+      <h2>{format(date, 'EEEE, d MMMM yyyy', { locale: id })}</h2>
+      <Form method='PATCH'>
+        <input type='hidden' name='_action' value='PREVIOUS_DAY' />
+        <button type='submit'>Hari sebelumnya</button>
+      </Form>
+      <Form method='PATCH'>
+        <input type='hidden' name='_action' value='TODAY' />
+        <button type='submit'>Hari ini</button>
+      </Form>
+      <Form method='PATCH'>
+        <input type='hidden' name='_action' value='NEXT_DAY' />
+        <button type='submit'>Hari selanjutnya</button>
+      </Form>
       <ul>
         <li>
           Imsak: {jadwal.jadwal.imsak} ({timeLeft(jadwal.jadwal.imsak)})
