@@ -23,6 +23,10 @@ import { commitSession, destroySession, getSession } from './sessions';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { toHijriDate } from './lib/hijri';
+import { LocationResponse } from './types/location';
+import { CityCombobox } from './components/CityCombobox';
+import { useState } from 'react';
+import { Button } from './components/ui/button';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
@@ -33,16 +37,6 @@ export const meta: MetaFunction = () => {
     { title: 'Jadwal Sholat' },
     { name: 'description', content: 'Jadwal Sholat' },
   ];
-};
-
-type Location = {
-  id: string;
-  lokasi: string;
-};
-
-type LocationResponse = {
-  status: boolean;
-  data: Location[];
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -106,6 +100,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function App() {
   const { locations, locationId, date } = useLoaderData<typeof loader>();
   const params = useParams();
+  const [city, setCity] = useState(locationId);
 
   const getLocationName = (id: string) => {
     return (
@@ -135,8 +130,24 @@ export default function App() {
         </div>
         <div className='container mx-auto -mt-14'>
           <div className='bg-white rounded-2xl py-7 px-8 flex justify-between'>
-            <div>
+            <div className='space-y-4'>
               <h2 className='font-semibold text-2xl'>Cari Lokasi Anda</h2>
+              <Form method='POST'>
+                <input type='hidden' name='_action' value='SET_LOCATION' />
+                <input
+                  type='hidden'
+                  name='location'
+                  value={city ?? undefined}
+                />
+                <div className='flex space-x-2'>
+                  <CityCombobox
+                    value={city ?? ''}
+                    setValue={setCity}
+                    locations={locations}
+                  />
+                  <Button type='submit'>Set</Button>
+                </div>
+              </Form>
             </div>
             <div className='text-right'>
               <p className='text-xl'>
