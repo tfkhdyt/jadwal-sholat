@@ -11,6 +11,7 @@ import {
   CommandItem,
 } from './ui/command';
 import { cn } from '~/lib/utils';
+import { ScrollArea } from './ui/scroll-area';
 
 export function CityCombobox({
   value,
@@ -42,33 +43,35 @@ export function CityCombobox({
       <PopoverContent className='w-[400px] p-0'>
         <Command>
           <CommandInput placeholder='Search Kab/Kota...' />
-          <CommandEmpty>Kab/Kota tidak ditemukan</CommandEmpty>
-          <CommandGroup className='max-h-[200px] overflow-y-auto'>
-            {locations.map((location) => (
-              <CommandItem
-                key={location.id}
-                value={`${location.id}|${location.lokasi}`}
-                onSelect={(currentValue) => {
-                  setValue(
-                    locations.find(
-                      (location) =>
-                        location.lokasi ===
-                        currentValue.split('|')[1].toUpperCase()
-                    )?.id ?? ''
-                  );
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    value === location.id ? 'opacity-100' : 'opacity-0'
-                  )}
-                />
-                {location.lokasi}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <ScrollArea className='w-[400px] h-[300px]'>
+            <CommandEmpty>Kab/Kota tidak ditemukan</CommandEmpty>
+            <CommandGroup>
+              {locations.map((location) => (
+                <CommandItem
+                  key={location.id}
+                  value={`${location.id}|${location.lokasi}`}
+                  onSelect={(currentValue) => {
+                    setValue(
+                      locations.find(
+                        (location) =>
+                          location.lokasi ===
+                          currentValue.split('|')[1].toUpperCase()
+                      )?.id ?? ''
+                    );
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      'mr-2 h-4 w-4',
+                      value === location.id ? 'opacity-100' : 'opacity-0'
+                    )}
+                  />
+                  {location.lokasi}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </ScrollArea>
         </Command>
       </PopoverContent>
     </Popover>
