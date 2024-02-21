@@ -113,12 +113,9 @@ export default function Location() {
       {/*   <input type='hidden' name='_action' value='NEXT_DAY' /> */}
       {/*   <button type='submit'>Hari selanjutnya</button> */}
       {/* </Form> */}
-      <div className='bg-white rounded-2xl py-7 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
+      <div className='bg-white rounded-2xl py-5 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
         {jadwalArray.map((time) => (
-          <div
-            className='py-6 px-8 flex-col space-y-2 text-center'
-            key={time.name}
-          >
+          <div className='py-5 flex-col space-y-1 text-center' key={time.name}>
             <p
               className={cn(
                 isPassed(time.time)
