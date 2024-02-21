@@ -100,14 +100,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function App() {
   const { locations, locationId, date } = useLoaderData<typeof loader>();
   const params = useParams();
-  const [city, setCity] = useState(locationId);
-
-  const getLocationName = (id: string) => {
-    return (
-      locations.find((location) => location.id === id)?.lokasi ??
-      'Tidak diketahui'
-    );
-  };
+  const [city, setCity] = useState(locationId ?? params.locationId);
 
   return (
     <html lang='en'>
@@ -117,7 +110,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className='bg-gray-100'>
+      <body className='bg-slate-100'>
         <div className='relative -z-50'>
           <img
             src='/images/header.png'
@@ -128,7 +121,7 @@ export default function App() {
             <span className='text-xl text-white'>Jadwal Sholat</span>
           </header>
         </div>
-        <div className='container mx-auto -mt-14'>
+        <div className='container mx-auto -mt-16'>
           <div className='bg-white rounded-2xl py-7 px-8 flex justify-between'>
             <div className='space-y-4'>
               <h2 className='font-semibold text-2xl'>Cari Lokasi Anda</h2>
@@ -160,43 +153,14 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div>
-          <h1>Jadwal Sholat</h1>
+        <div className='container mx-auto mt-16'>
           {locationId || params.locationId ? (
-            <div>
-              <p>
-                Lokasi Anda saat ini:{' '}
-                {params.locationId
-                  ? getLocationName(params.locationId)
-                  : getLocationName(locationId ?? '')}{' '}
-              </p>
-              <Form method='DELETE'>
-                <input type='hidden' name='_action' value='RESET_LOCATION' />
-                <button type='submit'>Ganti lokasi</button>
-              </Form>
-            </div>
-          ) : (
-            <div>
-              <p>Pilih lokasi terlebih dahulu:</p>
-              <Form method='POST'>
-                <input type='hidden' name='_action' value='SET_LOCATION' />
-                <select name='location' id='location' defaultValue=''>
-                  <option value='' disabled>
-                    Pilih lokasi
-                  </option>
-                  {locations.map((location) => (
-                    <option key={location.id} value={location.id}>
-                      {location.lokasi}
-                    </option>
-                  ))}
-                </select>
-                <button type='submit'>Set</button>
-              </Form>
-            </div>
-          )}
-          <div>
             <Outlet />
-          </div>
+          ) : (
+            <h2 className='font-semibold text-2xl text-center'>
+              Pilih Kota/Kab terlebih dahulu
+            </h2>
+          )}
         </div>
         <ScrollRestoration />
         <Scripts />

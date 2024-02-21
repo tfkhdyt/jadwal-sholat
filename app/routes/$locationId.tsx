@@ -4,9 +4,9 @@ import {
   json,
   redirect,
 } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
-import { format, formatDistanceToNow } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { useLoaderData } from '@remix-run/react';
+import { format } from 'date-fns';
+import { cn, isPassed, toCapitalize } from '~/lib/utils';
 
 type JadwalResponse = {
   status: boolean;
@@ -86,68 +86,60 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 };
 
 export default function Location() {
-  const { jadwal, date } = useLoaderData<typeof loader>();
-
-  const timeLeft = (timeStr: string): string => {
-    const today = new Date();
-    const [hours, minutes] = timeStr.split(':');
-
-    const timeObject = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      Number(hours),
-      Number(minutes)
-    );
-
-    return formatDistanceToNow(timeObject, {
-      includeSeconds: true,
-      addSuffix: true,
-      locale: id,
-    });
-  };
+  const { jadwal } = useLoaderData<typeof loader>();
+  const jadwalArray = [
+    { name: 'Imsak', time: jadwal.jadwal.imsak },
+    { name: 'Subuh', time: jadwal.jadwal.subuh },
+    { name: 'Dzuhur', time: jadwal.jadwal.dzuhur },
+    { name: 'Ashar', time: jadwal.jadwal.ashar },
+    { name: 'Maghrib', time: jadwal.jadwal.maghrib },
+    { name: 'Isya', time: jadwal.jadwal.isya },
+  ];
 
   return (
-    <>
-      <h2>{format(date, 'EEEE, d MMMM yyyy', { locale: id })}</h2>
-      <Form method='PATCH'>
-        <input type='hidden' name='_action' value='PREVIOUS_DAY' />
-        <button type='submit'>Hari sebelumnya</button>
-      </Form>
-      <Form method='PATCH'>
-        <input type='hidden' name='_action' value='TODAY' />
-        <button type='submit'>Hari ini</button>
-      </Form>
-      <Form method='PATCH'>
-        <input type='hidden' name='_action' value='NEXT_DAY' />
-        <button type='submit'>Hari selanjutnya</button>
-      </Form>
-      <ul>
-        <li>
-          Imsak: {jadwal.jadwal.imsak} ({timeLeft(jadwal.jadwal.imsak)})
-        </li>
-        <li>
-          Subuh: {jadwal.jadwal.subuh} ({timeLeft(jadwal.jadwal.subuh)})
-        </li>
-        <li>
-          Terbit: {jadwal.jadwal.terbit} ({timeLeft(jadwal.jadwal.terbit)})
-        </li>
-        <li>
-          Dhuha: {jadwal.jadwal.dhuha} ({timeLeft(jadwal.jadwal.dhuha)})
-        </li>
-        <li>
-          Dzuhur: {jadwal.jadwal.dzuhur} ({timeLeft(jadwal.jadwal.dzuhur)})
-        </li>
-        <li>
-          Ashar: {jadwal.jadwal.ashar} ({timeLeft(jadwal.jadwal.ashar)})
-        </li>
-        <li>
-          Maghrib: {jadwal.jadwal.maghrib} ({timeLeft(jadwal.jadwal.maghrib)})
-        </li>
-        <li>
-          Isya: {jadwal.jadwal.isya} ({timeLeft(jadwal.jadwal.isya)})
-        </li>
-      </ul>
-    </>
+    <div className='space-y-6'>
+      <h2 className='font-semibold text-2xl'>
+        Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7
+      </h2>
+      {/* <Form method='PATCH'> */}
+      {/*   <input type='hidden' name='_action' value='PREVIOUS_DAY' /> */}
+      {/*   <button type='submit'>Hari sebelumnya</button> */}
+      {/* </Form> */}
+      {/* <Form method='PATCH'> */}
+      {/*   <input type='hidden' name='_action' value='TODAY' /> */}
+      {/*   <button type='submit'>Hari ini</button> */}
+      {/* </Form> */}
+      {/* <Form method='PATCH'> */}
+      {/*   <input type='hidden' name='_action' value='NEXT_DAY' /> */}
+      {/*   <button type='submit'>Hari selanjutnya</button> */}
+      {/* </Form> */}
+      <div className='bg-white rounded-2xl p-7 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
+        {jadwalArray.map((time) => (
+          <div
+            className='py-6 px-8 flex-col space-y-2 text-center'
+            key={time.name}
+          >
+            <p
+              className={cn(
+                isPassed(time.time)
+                  ? 'text-xl text-gray-900'
+                  : 'text-xl text-cyan-800 font-bold'
+              )}
+            >
+              {time.name}
+            </p>
+            <p
+              className={cn(
+                isPassed(time.time)
+                  ? 'text-xl text-zinc-500'
+                  : 'text-xl text-gray-900'
+              )}
+            >
+              {time.time} WIB
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
