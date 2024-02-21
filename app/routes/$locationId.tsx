@@ -40,7 +40,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const res = await fetch(
     `https://api.myquran.com/v2/sholat/jadwal/${
       params.locationId
-    }/${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
+    }/${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
   );
   const data: JadwalResponse = await res.json();
   if (!res.ok || !data.status) {
