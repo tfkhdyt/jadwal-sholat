@@ -1,4 +1,3 @@
-import { cssBundleHref } from '@remix-run/css-bundle';
 import {
   ActionFunctionArgs,
   LinksFunction,
@@ -19,10 +18,14 @@ import {
   useParams,
 } from '@remix-run/react';
 import invariant from 'tiny-invariant';
+import stylesheet from '~/tailwind.css';
 import { commitSession, destroySession, getSession } from './sessions';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { toHijriDate } from './lib/hijri';
 
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
+  { rel: 'stylesheet', href: stylesheet },
 ];
 
 export const meta: MetaFunction = () => {
@@ -44,6 +47,12 @@ type LocationResponse = {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get('Cookie'));
+  const { searchParams } = new URL(request.url);
+  const dateFromSearchParams = searchParams.get('date');
+
+  const today = dateFromSearchParams
+    ? new Date(dateFromSearchParams)
+    : new Date();
 
   const res = await fetch('https://api.myquran.com/v2/sholat/kota/semua');
   const data: LocationResponse = await res.json();
@@ -59,6 +68,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({
     locations: sortedLocations,
     locationId: session.get('locationId'),
+    date: today,
   });
 };
 
@@ -94,7 +104,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function App() {
-  const { locations, locationId } = useLoaderData<typeof loader>();
+  const { locations, locationId, date } = useLoaderData<typeof loader>();
   const params = useParams();
 
   const getLocationName = (id: string) => {
@@ -112,7 +122,33 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className='bg-gray-100'>
+        <div className='relative -z-50'>
+          <img
+            src='/images/header.png'
+            alt='Header'
+            className='w-screen h-auto aspect-[7/1] object-cover z-0 object-bottom'
+          />
+          <header className='absolute top-0 inset-x-0 container mx-auto py-5'>
+            <span className='text-xl text-white'>Jadwal Sholat</span>
+          </header>
+        </div>
+        <div className='container mx-auto -mt-14'>
+          <div className='bg-white rounded-2xl py-7 px-8 flex justify-between'>
+            <div>
+              <h2 className='font-semibold text-2xl'>Cari Lokasi Anda</h2>
+            </div>
+            <div className='text-right'>
+              <p className='text-xl'>
+                {format(date, 'dd MMMM yyyy', { locale: id })}
+              </p>
+              <p className='text-xl'>{toHijriDate(new Date(date))}</p>
+              <p className='font-semibold text-2xl'>
+                {format(date, 'EEEE', { locale: id })}
+              </p>
+            </div>
+          </div>
+        </div>
         <div>
           <h1>Jadwal Sholat</h1>
           {locationId || params.locationId ? (
