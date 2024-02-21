@@ -6,7 +6,11 @@ import {
 } from '@remix-run/node';
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { format } from 'date-fns';
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from 'lucide-react';
 import { useMemo } from 'react';
 import { Button } from '~/components/ui/button';
 import { useClosestAdzan } from '~/hooks/use-closest-adzan';
@@ -90,7 +94,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 };
 
 export default function Location() {
-  const { jadwal } = useLoaderData<typeof loader>();
+  const { jadwal, date } = useLoaderData<typeof loader>();
   const jadwalArray = useMemo(
     () => [
       { name: 'Imsak', time: jadwal.jadwal.imsak },
@@ -111,18 +115,6 @@ export default function Location() {
       <h2 className='font-semibold text-2xl'>
         Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7
       </h2>
-      {/* <Form method='PATCH'> */}
-      {/*   <input type='hidden' name='_action' value='PREVIOUS_DAY' /> */}
-      {/*   <button type='submit'>Hari sebelumnya</button> */}
-      {/* </Form> */}
-      {/* <Form method='PATCH'> */}
-      {/*   <input type='hidden' name='_action' value='TODAY' /> */}
-      {/*   <button type='submit'>Hari ini</button> */}
-      {/* </Form> */}
-      {/* <Form method='PATCH'> */}
-      {/*   <input type='hidden' name='_action' value='NEXT_DAY' /> */}
-      {/*   <button type='submit'>Hari selanjutnya</button> */}
-      {/* </Form> */}
       <div className='bg-white rounded-2xl py-5 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
         {jadwalArray.map((time) => {
           return (
@@ -167,10 +159,11 @@ export default function Location() {
         <div className='flex justify-end'>
           <div className='space-x-4'>
             <Button
-              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7'
+              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
               onClick={() =>
                 submit({ _action: 'PREVIOUS_DAY' }, { method: 'PATCH' })
               }
+              title='Hari sebelumnya'
             >
               <ChevronLeftIcon
                 className='text-cyan-800 group-hover:text-slate-100'
@@ -178,11 +171,27 @@ export default function Location() {
                 strokeWidth={1.5}
               />
             </Button>
+            {new Date().getDate() !== new Date(date).getDate() && (
+              <Button
+                className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
+                onClick={() =>
+                  submit({ _action: 'TODAY' }, { method: 'PATCH' })
+                }
+                title='Hari ini'
+              >
+                <MoreHorizontalIcon
+                  className='text-cyan-800 group-hover:text-slate-100'
+                  size={32}
+                  strokeWidth={1.5}
+                />
+              </Button>
+            )}
             <Button
-              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7'
+              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
               onClick={() =>
                 submit({ _action: 'NEXT_DAY' }, { method: 'PATCH' })
               }
+              title='Hari selanjutnya'
             >
               <ChevronRightIcon
                 className='text-cyan-800 group-hover:text-slate-100'
