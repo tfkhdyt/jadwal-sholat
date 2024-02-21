@@ -26,6 +26,7 @@ import { LocationResponse } from './types/location';
 import { CityCombobox } from './components/CityCombobox';
 import { useState } from 'react';
 import { Button } from './components/ui/button';
+import { MapPinIcon } from 'lucide-react';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
@@ -117,13 +118,16 @@ export default function App() {
             className='w-screen h-auto aspect-[7/1] object-cover z-0 object-bottom'
           />
           <header className='absolute top-0 inset-x-0 container mx-auto py-5'>
-            <span className='text-xl text-white'>Jadwal Sholat</span>
+            <img src='/images/logo.png' alt='Logo' width={134} height={54} />
           </header>
         </div>
         <div className='container mx-auto -mt-16'>
           <div className='bg-white rounded-2xl py-7 px-8 flex justify-between'>
-            <div className='space-y-4'>
-              <h2 className='font-semibold text-2xl'>Cari Lokasi Anda</h2>
+            <div className='space-y-6'>
+              <h2 className='font-semibold text-2xl flex items-center'>
+                <MapPinIcon className='w-6 h-6 mr-2' />
+                Cari Lokasi Anda
+              </h2>
               <Form method='POST'>
                 <input type='hidden' name='_action' value='SET_LOCATION' />
                 <input
@@ -131,7 +135,7 @@ export default function App() {
                   name='location'
                   value={city ?? undefined}
                 />
-                <div className='flex space-x-2'>
+                <div className='flex space-x-3'>
                   <CityCombobox
                     value={city ?? ''}
                     setValue={setCity}
