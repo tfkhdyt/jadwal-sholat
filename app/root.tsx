@@ -8,7 +8,6 @@ import {
 import {
   Form,
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -18,7 +17,7 @@ import {
   useParams,
 } from '@remix-run/react';
 import invariant from 'tiny-invariant';
-import stylesheet from '~/tailwind.css';
+import stylesheet from '~/tailwind.css?url';
 import { commitSession, destroySession, getSession } from './sessions';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -138,7 +137,12 @@ export default function App() {
                     setValue={setCity}
                     locations={locations}
                   />
-                  <Button type='submit'>Set</Button>
+                  <Button
+                    type='submit'
+                    className='bg-cyan-800 hover:bg-cyan-700 font-medium'
+                  >
+                    Pilih
+                  </Button>
                 </div>
               </Form>
             </div>
@@ -164,7 +168,6 @@ export default function App() {
         </div>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
