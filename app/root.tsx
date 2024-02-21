@@ -6,7 +6,6 @@ import {
   redirect,
 } from '@remix-run/node';
 import {
-  Form,
   Links,
   Meta,
   Outlet,
@@ -15,6 +14,7 @@ import {
   json,
   useLoaderData,
   useParams,
+  useSubmit,
 } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import stylesheet from '~/tailwind.css?url';
@@ -24,8 +24,6 @@ import { id } from 'date-fns/locale';
 import { toHijriDate } from './lib/hijri';
 import { LocationResponse } from './types/location';
 import { CityCombobox } from './components/CityCombobox';
-import { useState } from 'react';
-import { Button } from './components/ui/button';
 import { MapPinIcon } from 'lucide-react';
 
 export const links: LinksFunction = () => [
@@ -100,7 +98,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function App() {
   const { locations, locationId, date } = useLoaderData<typeof loader>();
   const params = useParams();
-  const [city, setCity] = useState(locationId ?? params.locationId);
+  const submit = useSubmit();
+
+  const handleChangeLocation = (location: string) => {
+    submit({ location, _action: 'SET_LOCATION' }, { method: 'POST' });
+  };
 
   return (
     <html lang='en'>
@@ -128,27 +130,13 @@ export default function App() {
                 <MapPinIcon className='w-6 h-6 mr-2' />
                 Cari Lokasi Anda
               </h2>
-              <Form method='POST'>
-                <input type='hidden' name='_action' value='SET_LOCATION' />
-                <input
-                  type='hidden'
-                  name='location'
-                  value={city ?? undefined}
+              <div className='flex space-x-3'>
+                <CityCombobox
+                  value={locationId ?? params.locationId ?? ''}
+                  setValue={handleChangeLocation}
+                  locations={locations}
                 />
-                <div className='flex space-x-3'>
-                  <CityCombobox
-                    value={city ?? ''}
-                    setValue={setCity}
-                    locations={locations}
-                  />
-                  <Button
-                    type='submit'
-                    className='bg-cyan-800 hover:bg-cyan-700 font-medium'
-                  >
-                    Pilih
-                  </Button>
-                </div>
-              </Form>
+              </div>
             </div>
             <div className='text-right'>
               <p className='text-xl'>

@@ -4,8 +4,12 @@ import {
   json,
   redirect,
 } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useSubmit } from '@remix-run/react';
 import { format } from 'date-fns';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { useMemo } from 'react';
+import { Button } from '~/components/ui/button';
+import { useClosestAdzan } from '~/hooks/use-closest-adzan';
 import { cn, isPassed, toCapitalize } from '~/lib/utils';
 
 type JadwalResponse = {
@@ -87,14 +91,20 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function Location() {
   const { jadwal } = useLoaderData<typeof loader>();
-  const jadwalArray = [
-    { name: 'Imsak', time: jadwal.jadwal.imsak },
-    { name: 'Subuh', time: jadwal.jadwal.subuh },
-    { name: 'Dzuhur', time: jadwal.jadwal.dzuhur },
-    { name: 'Ashar', time: jadwal.jadwal.ashar },
-    { name: 'Maghrib', time: jadwal.jadwal.maghrib },
-    { name: 'Isya', time: jadwal.jadwal.isya },
-  ];
+  const jadwalArray = useMemo(
+    () => [
+      { name: 'Imsak', time: jadwal.jadwal.imsak },
+      { name: 'Subuh', time: jadwal.jadwal.subuh },
+      { name: 'Dzuhur', time: jadwal.jadwal.dzuhur },
+      { name: 'Ashar', time: jadwal.jadwal.ashar },
+      { name: 'Maghrib', time: jadwal.jadwal.maghrib },
+      { name: 'Isya', time: jadwal.jadwal.isya },
+    ],
+    [jadwal]
+  );
+  const { closestUpcomingAdzan, timeRemainingToClosestAdzan: timeLeft } =
+    useClosestAdzan(jadwalArray);
+  const submit = useSubmit();
 
   return (
     <div className='space-y-6'>
@@ -114,28 +124,74 @@ export default function Location() {
       {/*   <button type='submit'>Hari selanjutnya</button> */}
       {/* </Form> */}
       <div className='bg-white rounded-2xl py-5 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
-        {jadwalArray.map((time) => (
-          <div className='py-5 flex-col space-y-1 text-center' key={time.name}>
-            <p
-              className={cn(
-                isPassed(time.time)
-                  ? 'text-xl text-gray-900'
-                  : 'text-xl text-cyan-800 font-bold'
-              )}
+        {jadwalArray.map((time) => {
+          return (
+            <div
+              className='py-5 flex-col space-y-1 text-center'
+              key={time.name}
             >
-              {time.name}
-            </p>
-            <p
-              className={cn(
-                isPassed(time.time)
-                  ? 'text-xl text-zinc-500'
-                  : 'text-xl text-gray-900'
-              )}
+              <p
+                className={cn(
+                  isPassed(time.time)
+                    ? 'text-xl text-gray-900'
+                    : 'text-xl text-cyan-800 font-bold'
+                )}
+              >
+                {time.name}
+              </p>
+              <p
+                className={cn(
+                  isPassed(time.time)
+                    ? 'text-xl text-zinc-500'
+                    : 'text-xl text-gray-900'
+                )}
+              >
+                {time.time} WIB
+              </p>
+            </div>
+          );
+        })}
+      </div>
+      <div className='pt-4 flex justify-between'>
+        <h2 className='font-semibold text-2xl'>Waktu Sholat Selanjutnya:</h2>
+        <div className='text-xl'>
+          <span className='font-semibold'>{closestUpcomingAdzan?.name},</span>{' '}
+          <span>
+            {timeLeft?.hours !== 0 && `${timeLeft.hours} Jam :`}{' '}
+            {timeLeft?.minutes !== 0 && `${timeLeft.minutes} Menit :`}{' '}
+            {timeLeft?.seconds} Detik
+          </span>
+        </div>
+      </div>
+      <div>
+        <div className='flex justify-end'>
+          <div className='space-x-4'>
+            <Button
+              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7'
+              onClick={() =>
+                submit({ _action: 'PREVIOUS_DAY' }, { method: 'PATCH' })
+              }
             >
-              {time.time} WIB
-            </p>
+              <ChevronLeftIcon
+                className='text-cyan-800 group-hover:text-slate-100'
+                size={32}
+                strokeWidth={1.5}
+              />
+            </Button>
+            <Button
+              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7'
+              onClick={() =>
+                submit({ _action: 'NEXT_DAY' }, { method: 'PATCH' })
+              }
+            >
+              <ChevronRightIcon
+                className='text-cyan-800 group-hover:text-slate-100'
+                size={32}
+                strokeWidth={1.5}
+              />
+            </Button>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
