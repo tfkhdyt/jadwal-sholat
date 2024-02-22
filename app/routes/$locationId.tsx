@@ -6,12 +6,14 @@ import {
 } from '@remix-run/node';
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { format } from 'date-fns';
+import { z } from 'zod';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from 'lucide-react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { DatePicker } from '~/components/DatePicker';
 import { Button } from '~/components/ui/button';
 import { useClosestAdzan } from '~/hooks/use-closest-adzan';
 import { cn, isPassed, toCapitalize } from '~/lib/utils';
@@ -58,6 +60,14 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return json({ jadwal: data.data, date: today });
 };
 
+const actionSchema = z.object({
+  _action: z.enum(['NEXT_DAY', 'PREVIOUS_DAY', 'TODAY', 'SET_DATE']),
+  date: z
+    .string()
+    .transform((val) => new Date(val))
+    .optional(),
+});
+
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const { searchParams } = new URL(request.url);
   const dateFromSearchParams = searchParams.get('date');
@@ -67,11 +77,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     : new Date();
 
   const formData = await request.formData();
-  const data = Object.fromEntries(formData) as {
-    _action: 'NEXT_DAY' | 'PREVIOUS_DAY' | 'TODAY';
-  };
+  const data = Object.fromEntries(formData);
 
-  switch (data._action) {
+  const result = actionSchema.safeParse(data);
+  if (!result.success) {
+    throw json({ message: result.error.message }, { status: 422 });
+  }
+
+  switch (result.data._action) {
     case 'NEXT_DAY':
       return redirect(
         `/${params.locationId}?date=${format(
@@ -88,6 +101,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       );
     case 'TODAY':
       return redirect(`/${params.locationId}`);
+    case 'SET_DATE':
+      return redirect(
+        `/${params.locationId}?date=${format(
+          result.data.date ?? '',
+          'yyyy-MM-dd'
+        )}`
+      );
     default:
       return null;
   }
@@ -97,18 +117,29 @@ export default function Location() {
   const { jadwal, date } = useLoaderData<typeof loader>();
   const jadwalArray = useMemo(
     () => [
-      { name: 'Imsak', time: jadwal.jadwal.imsak },
       { name: 'Subuh', time: jadwal.jadwal.subuh },
+      { name: 'Dhuha', time: jadwal.jadwal.dhuha },
       { name: 'Dzuhur', time: jadwal.jadwal.dzuhur },
       { name: 'Ashar', time: jadwal.jadwal.ashar },
       { name: 'Maghrib', time: jadwal.jadwal.maghrib },
       { name: 'Isya', time: jadwal.jadwal.isya },
+      { name: 'Subuh', time: jadwal.jadwal.subuh },
     ],
     [jadwal]
   );
   const { closestUpcomingAdzan, timeRemainingToClosestAdzan: timeLeft } =
     useClosestAdzan(jadwalArray);
   const submit = useSubmit();
+  const [currentDate, setCurrentDate] = useState<Date | undefined>();
+
+  useEffect(() => {
+    if (currentDate) {
+      submit(
+        { _action: 'SET_DATE', date: currentDate.toString() },
+        { method: 'PATCH' }
+      );
+    }
+  }, [currentDate, submit]);
 
   return (
     <div className='space-y-6'>
@@ -116,32 +147,33 @@ export default function Location() {
         Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7
       </h2>
       <div className='bg-white rounded-2xl py-5 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
-        {jadwalArray.map((time) => {
-          return (
-            <div
-              className='py-5 flex-col space-y-1 text-center'
-              key={time.name}
-            >
-              <p
-                className={cn(
-                  isPassed(time.time)
-                    ? 'text-xl text-gray-900'
-                    : 'text-xl text-cyan-800 font-bold'
-                )}
+        {jadwalArray.map((time, idx) => {
+          if (idx < 6)
+            return (
+              <div
+                className='py-5 flex-col space-y-1 text-center'
+                key={time.name}
               >
-                {time.name}
-              </p>
-              <p
-                className={cn(
-                  isPassed(time.time)
-                    ? 'text-xl text-zinc-500'
-                    : 'text-xl text-gray-900'
-                )}
-              >
-                {time.time} WIB
-              </p>
-            </div>
-          );
+                <p
+                  className={cn(
+                    isPassed(time.time)
+                      ? 'text-xl text-gray-900'
+                      : 'text-xl text-cyan-800 font-bold'
+                  )}
+                >
+                  {time.name}
+                </p>
+                <p
+                  className={cn(
+                    isPassed(time.time)
+                      ? 'text-xl text-zinc-500'
+                      : 'text-xl text-gray-900'
+                  )}
+                >
+                  {time.time} WIB
+                </p>
+              </div>
+            );
         })}
       </div>
       <div className='pt-4 flex justify-between'>
@@ -156,7 +188,10 @@ export default function Location() {
         </div>
       </div>
       <div>
-        <div className='flex justify-end'>
+        <div className='flex justify-between items-center'>
+          <div className='space-x-4'>
+            <DatePicker date={currentDate} setDate={setCurrentDate} />
+          </div>
           <div className='space-x-4'>
             <Button
               className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'

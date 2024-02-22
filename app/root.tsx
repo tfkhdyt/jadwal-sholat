@@ -115,15 +115,15 @@ export default function App() {
       <body className='bg-slate-100'>
         <div className='relative -z-50'>
           <img
-            src='/images/header.png'
+            src='/images/header.webp'
             alt='Header'
-            className='w-screen h-auto aspect-[7/1] object-cover z-0 object-bottom'
+            className='w-screen h-auto aspect-[5/1] object-cover z-0 object-bottom'
           />
           <header className='absolute top-0 inset-x-0 container mx-auto py-5'>
-            <img src='/images/logo.png' alt='Logo' width={134} height={54} />
+            <img src='/images/logo.webp' alt='Logo' width={134} height={54} />
           </header>
         </div>
-        <div className='container mx-auto -mt-16'>
+        <div className='container mx-auto -mt-20'>
           <div className='bg-white rounded-2xl py-7 px-8 flex justify-between'>
             <div className='space-y-6'>
               <h2 className='font-semibold text-2xl flex items-center'>
