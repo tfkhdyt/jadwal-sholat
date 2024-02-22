@@ -1,3 +1,7 @@
+import '@fontsource/poppins/300.css';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/600.css';
+
 import {
   ActionFunctionArgs,
   LinksFunction,
@@ -116,7 +120,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className='bg-slate-100'>
+      <body className='bg-slate-100 font-poppins'>
         <header
           className={cn(
             'fixed top-0 inset-x-0 py-5 transition-all border-b border-transparent duration-200 ease-in-out z-50',
@@ -139,7 +143,7 @@ export default function App() {
           className='w-screen h-auto aspect-[1.5/1] md:aspect-[2.4/1] lg:aspect-[5/1] object-cover object-top md:object-bottom'
         />
         <div className='container mx-auto relative -top-32 md:-top-16'>
-          <div className='bg-white rounded-2xl py-7 px-8 flex md:justify-between flex-col md:flex-row gap-6'>
+          <div className='bg-white rounded-2xl py-7 px-8 flex md:justify-between flex-col md:flex-row gap-6 shadow-md'>
             <div className='space-y-6'>
               <h2 className='font-semibold text-xl md:text-2xl flex items-center'>
                 <MapPinIcon className='w-6 h-6 mr-2' />
