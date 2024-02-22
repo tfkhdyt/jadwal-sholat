@@ -1,5 +1,3 @@
-'use client';
-
 import { CalendarIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
@@ -23,11 +21,11 @@ export const DatePicker = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
+          className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
           title='Pilih tanggal'
         >
           <CalendarIcon
-            className='text-cyan-800 group-hover:text-slate-100'
+            className='text-lightBlue-800 group-hover:text-slate-100'
             size={32}
             strokeWidth={1.5}
           />

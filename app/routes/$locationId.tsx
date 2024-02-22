@@ -157,8 +157,8 @@ export default function Location() {
                 <p
                   className={cn(
                     isPassed(time.time)
-                      ? 'text-xl text-gray-900'
-                      : 'text-xl text-cyan-800 font-bold'
+                      ? 'text-xl text-coolGray-800'
+                      : 'text-xl text-lightBlue-800 font-bold'
                   )}
                 >
                   {time.name}
@@ -166,8 +166,8 @@ export default function Location() {
                 <p
                   className={cn(
                     isPassed(time.time)
-                      ? 'text-xl text-zinc-500'
-                      : 'text-xl text-gray-900'
+                      ? 'text-xl text-gray-400'
+                      : 'text-xl text-coolGray-800'
                   )}
                 >
                   {time.time} WIB
@@ -194,42 +194,42 @@ export default function Location() {
           </div>
           <div className='space-x-4'>
             <Button
-              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
+              className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
               onClick={() =>
                 submit({ _action: 'PREVIOUS_DAY' }, { method: 'PATCH' })
               }
               title='Hari sebelumnya'
             >
               <ChevronLeftIcon
-                className='text-cyan-800 group-hover:text-slate-100'
+                className='text-lightBlue-800 group-hover:text-slate-100'
                 size={32}
                 strokeWidth={1.5}
               />
             </Button>
             {new Date().getDate() !== new Date(date).getDate() && (
               <Button
-                className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
+                className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
                 onClick={() =>
                   submit({ _action: 'TODAY' }, { method: 'PATCH' })
                 }
                 title='Hari ini'
               >
                 <MoreHorizontalIcon
-                  className='text-cyan-800 group-hover:text-slate-100'
+                  className='text-lightBlue-800 group-hover:text-slate-100'
                   size={32}
                   strokeWidth={1.5}
                 />
               </Button>
             )}
             <Button
-              className='bg-transparent border-2 border-cyan-800 hover:bg-cyan-800 group py-7 rounded-lg'
+              className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
               onClick={() =>
                 submit({ _action: 'NEXT_DAY' }, { method: 'PATCH' })
               }
               title='Hari selanjutnya'
             >
               <ChevronRightIcon
-                className='text-cyan-800 group-hover:text-slate-100'
+                className='text-lightBlue-800 group-hover:text-slate-100'
                 size={32}
                 strokeWidth={1.5}
               />
