@@ -41,10 +41,10 @@ export function CityCombobox({
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-min md:w-[400px] p-0 z-0'>
+      <PopoverContent className='w-[250px] md:w-[400px] p-0 z-0'>
         <Command>
           <CommandInput placeholder='Search Kab/Kota...' />
-          <ScrollArea className='w-min md:w-[400px] h-[200px] md:h-[300px]'>
+          <ScrollArea className='w-[250px] md:w-[400px] h-[150px] md:h-[300px]'>
             <CommandEmpty>Lokasi tidak ditemukan</CommandEmpty>
             <CommandGroup>
               {locations.map((location) => (
