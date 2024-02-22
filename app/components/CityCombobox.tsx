@@ -32,6 +32,7 @@ export function CityCombobox({
           role='combobox'
           aria-expanded={open}
           className='w-full md:w-[400px] justify-between'
+          aria-label='Pilih lokasi'
         >
           {value
             ? locations.find((location) => location.id === value)?.lokasi ??
