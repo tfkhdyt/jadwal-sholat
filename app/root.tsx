@@ -25,6 +25,7 @@ import { toHijriDate } from './lib/hijri';
 import { LocationResponse } from './types/location';
 import { CityCombobox } from './components/CityCombobox';
 import { MapPinIcon } from 'lucide-react';
+import { Footer } from './components/Footer';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
@@ -158,6 +159,7 @@ export default function App() {
             </h2>
           )}
         </div>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>
