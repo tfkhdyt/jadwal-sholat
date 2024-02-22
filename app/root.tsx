@@ -25,13 +25,14 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { MapPinIcon } from 'lucide-react';
 import invariant from 'tiny-invariant';
+import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import stylesheet from '~/tailwind.css?url';
 import { CityCombobox } from './components/CityCombobox';
 import { Footer } from './components/Footer';
 import { toHijriDate } from './lib/hijri';
+import { cn } from './lib/utils';
 import { commitSession, destroySession, getSession } from './sessions';
 import { LocationResponse } from './types/location';
-import { cn } from './lib/utils';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
@@ -137,11 +138,15 @@ export default function App() {
             />
           </div>
         </header>
-        <img
-          src='/images/header.webp'
-          alt='Header'
-          className='w-screen h-auto aspect-[1.5/1] md:aspect-[2.4/1] lg:aspect-[5/1] object-cover object-top md:object-bottom'
-        />
+        <ParallaxProvider>
+          <Parallax speed={-10}>
+            <img
+              src='/images/header.webp'
+              alt='Header'
+              className='relative w-screen h-auto aspect-[1.5/1] md:aspect-[2.4/1] lg:aspect-[5/1] object-cover object-top md:object-bottom -top-14'
+            />
+          </Parallax>
+        </ParallaxProvider>
         <div className='container mx-auto relative -top-32 md:-top-16'>
           <div className='bg-white rounded-2xl py-7 px-8 flex md:justify-between flex-col md:flex-row gap-6 shadow-md'>
             <div className='space-y-6'>

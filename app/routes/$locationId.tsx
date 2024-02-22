@@ -6,11 +6,7 @@ import {
 } from '@remix-run/node';
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { format } from 'date-fns';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  MoreHorizontalIcon,
-} from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, UndoIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { DatePicker } from '~/components/DatePicker';
@@ -190,7 +186,7 @@ export default function Location() {
         </div>
       </div>
       <div>
-        <div className='flex justify-between items-center'>
+        <div className='flex flex-wrap items-start justify-between md:items-center gap-4'>
           <div className='space-x-4'>
             <DatePicker date={currentDate} setDate={setCurrentDate} />
           </div>
@@ -220,9 +216,9 @@ export default function Location() {
                     { method: 'PATCH', preventScrollReset: true }
                   )
                 }
-                title='Hari ini'
+                title='Kembali ke hari ini'
               >
-                <MoreHorizontalIcon
+                <UndoIcon
                   className='text-lightBlue-800 group-hover:text-slate-100'
                   size={32}
                   strokeWidth={1.5}
