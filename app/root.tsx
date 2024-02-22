@@ -16,16 +16,18 @@ import {
   useParams,
   useSubmit,
 } from '@remix-run/react';
-import invariant from 'tiny-invariant';
-import stylesheet from '~/tailwind.css?url';
-import { commitSession, destroySession, getSession } from './sessions';
+import { useWindowScroll } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { toHijriDate } from './lib/hijri';
-import { LocationResponse } from './types/location';
-import { CityCombobox } from './components/CityCombobox';
 import { MapPinIcon } from 'lucide-react';
+import invariant from 'tiny-invariant';
+import stylesheet from '~/tailwind.css?url';
+import { CityCombobox } from './components/CityCombobox';
 import { Footer } from './components/Footer';
+import { toHijriDate } from './lib/hijri';
+import { commitSession, destroySession, getSession } from './sessions';
+import { LocationResponse } from './types/location';
+import { cn } from './lib/utils';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
@@ -100,6 +102,7 @@ export default function App() {
   const { locations, locationId, date } = useLoaderData<typeof loader>();
   const params = useParams();
   const submit = useSubmit();
+  const [{ y }] = useWindowScroll();
 
   const handleChangeLocation = (location: string) => {
     submit({ location, _action: 'SET_LOCATION' }, { method: 'POST' });
@@ -114,20 +117,31 @@ export default function App() {
         <Links />
       </head>
       <body className='bg-slate-100'>
-        <div className='relative -z-50'>
-          <img
-            src='/images/header.webp'
-            alt='Header'
-            className='w-screen h-auto aspect-[5/1] object-cover z-0 object-bottom'
-          />
-          <header className='absolute top-0 inset-x-0 container mx-auto py-5'>
-            <img src='/images/logo.webp' alt='Logo' width={134} height={54} />
-          </header>
-        </div>
-        <div className='container mx-auto -mt-20'>
-          <div className='bg-white rounded-2xl py-7 px-8 flex justify-between'>
+        <header
+          className={cn(
+            'fixed top-0 inset-x-0 py-5 transition-all border-b border-transparent duration-200 ease-in-out z-50',
+            y && y >= 50 && 'bg-black/25 backdrop-blur-lg border-slate-800/25'
+          )}
+        >
+          <div className='container mx-auto'>
+            <img
+              src='/images/logo.webp'
+              alt='Logo'
+              width={134}
+              height={54}
+              className='h-8 md:h-12 w-auto'
+            />
+          </div>
+        </header>
+        <img
+          src='/images/header.webp'
+          alt='Header'
+          className='w-screen h-auto aspect-[1.5/1] md:aspect-[2.4/1] lg:aspect-[5/1] object-cover object-top md:object-bottom'
+        />
+        <div className='container mx-auto relative -top-32 md:-top-16'>
+          <div className='bg-white rounded-2xl py-7 px-8 flex md:justify-between flex-col md:flex-row gap-6'>
             <div className='space-y-6'>
-              <h2 className='font-semibold text-2xl flex items-center'>
+              <h2 className='font-semibold text-xl md:text-2xl flex items-center'>
                 <MapPinIcon className='w-6 h-6 mr-2' />
                 Cari Lokasi Anda
               </h2>
@@ -140,17 +154,19 @@ export default function App() {
               </div>
             </div>
             <div className='text-right'>
-              <p className='text-xl'>
+              <p className='text-lg md:text-xl'>
                 {format(date, 'dd MMMM yyyy', { locale: id })}
               </p>
-              <p className='text-xl'>{toHijriDate(new Date(date))}</p>
-              <p className='font-semibold text-2xl'>
+              <p className='text-lg md:text-xl'>
+                {toHijriDate(new Date(date))}
+              </p>
+              <p className='font-semibold text-xl md:text-2xl'>
                 {format(date, 'EEEE', { locale: id })}
               </p>
             </div>
           </div>
         </div>
-        <div className='container mx-auto mt-16'>
+        <div className='container mx-auto relative -top-16 md:top-0'>
           {locationId || params.locationId ? (
             <Outlet />
           ) : (

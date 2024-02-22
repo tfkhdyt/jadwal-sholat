@@ -136,29 +136,29 @@ export default function Location() {
     if (currentDate) {
       submit(
         { _action: 'SET_DATE', date: currentDate.toString() },
-        { method: 'PATCH' }
+        { method: 'PATCH', preventScrollReset: true }
       );
     }
   }, [currentDate, submit]);
 
   return (
     <div className='space-y-6'>
-      <h2 className='font-semibold text-2xl'>
+      <h2 className='font-semibold text-xl md:text-2xl'>
         Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7
       </h2>
-      <div className='bg-white rounded-2xl py-5 shadow-md grid grid-flow-col justify-stretch items-center divide-x-2'>
+      <div className='bg-white rounded-2xl md:py-5 shadow-md grid grid-flow-row md:grid-flow-col justify-stretch items-center divide-y-2 md:divide-y-0 md:divide-x-2'>
         {jadwalArray.map((time, idx) => {
           if (idx < 6)
             return (
               <div
-                className='py-5 flex-col space-y-1 text-center'
+                className='flex justify-between items-center p-5 md:flex-col space-y-1 text-center'
                 key={time.name}
               >
                 <p
                   className={cn(
                     isPassed(time.time)
-                      ? 'text-xl text-coolGray-800'
-                      : 'text-xl text-lightBlue-800 font-bold'
+                      ? 'text-lg md:text-xl text-coolGray-800'
+                      : 'text-lg md:text-xl text-lightBlue-800 font-bold'
                   )}
                 >
                   {time.name}
@@ -166,8 +166,8 @@ export default function Location() {
                 <p
                   className={cn(
                     isPassed(time.time)
-                      ? 'text-xl text-gray-400'
-                      : 'text-xl text-coolGray-800'
+                      ? 'text-lg md:text-xl text-gray-400'
+                      : 'text-lg md:text-xl text-coolGray-800'
                   )}
                 >
                   {time.time} WIB
@@ -176,9 +176,11 @@ export default function Location() {
             );
         })}
       </div>
-      <div className='pt-4 flex justify-between'>
-        <h2 className='font-semibold text-2xl'>Waktu Sholat Selanjutnya:</h2>
-        <div className='text-xl'>
+      <div className='pt-4 flex flex-col md:flex-row gap-2 justify-between'>
+        <h2 className='font-semibold text-xl md:text-2xl'>
+          Waktu Sholat Selanjutnya:
+        </h2>
+        <div className='text-lg md:text-xl'>
           <span className='font-semibold'>{closestUpcomingAdzan?.name},</span>{' '}
           <span>
             {timeLeft?.hours !== 0 && `${timeLeft.hours} Jam :`}{' '}
@@ -196,7 +198,10 @@ export default function Location() {
             <Button
               className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
               onClick={() =>
-                submit({ _action: 'PREVIOUS_DAY' }, { method: 'PATCH' })
+                submit(
+                  { _action: 'PREVIOUS_DAY' },
+                  { method: 'PATCH', preventScrollReset: true }
+                )
               }
               title='Hari sebelumnya'
             >
@@ -210,7 +215,10 @@ export default function Location() {
               <Button
                 className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
                 onClick={() =>
-                  submit({ _action: 'TODAY' }, { method: 'PATCH' })
+                  submit(
+                    { _action: 'TODAY' },
+                    { method: 'PATCH', preventScrollReset: true }
+                  )
                 }
                 title='Hari ini'
               >
@@ -224,7 +232,10 @@ export default function Location() {
             <Button
               className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
               onClick={() =>
-                submit({ _action: 'NEXT_DAY' }, { method: 'PATCH' })
+                submit(
+                  { _action: 'NEXT_DAY' },
+                  { method: 'PATCH', preventScrollReset: true }
+                )
               }
               title='Hari selanjutnya'
             >

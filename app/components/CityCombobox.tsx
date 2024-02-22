@@ -31,7 +31,7 @@ export function CityCombobox({
           variant='outline'
           role='combobox'
           aria-expanded={open}
-          className='w-[400px] justify-between'
+          className='w-full md:w-[400px] justify-between'
         >
           {value
             ? locations.find((location) => location.id === value)?.lokasi ??
