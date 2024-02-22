@@ -68,6 +68,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     locations: sortedLocations,
     locationId: session.get('locationId'),
     date: today,
+    hijriDate: toHijriDate(today),
   });
 };
 
@@ -103,7 +104,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function App() {
-  const { locations, locationId, date } = useLoaderData<typeof loader>();
+  const { locations, locationId, date, hijriDate } =
+    useLoaderData<typeof loader>();
   const params = useParams();
   const submit = useSubmit();
   const [{ y }] = useWindowScroll();
@@ -163,9 +165,7 @@ export default function App() {
               <p className='text-lg md:text-xl'>
                 {format(date, 'dd MMMM yyyy', { locale: id })}
               </p>
-              <p className='text-lg md:text-xl'>
-                {toHijriDate(new Date(date))}
-              </p>
+              <p className='text-lg md:text-xl'>{hijriDate}</p>
               <p className='font-semibold text-xl md:text-2xl'>
                 {format(date, 'EEEE', { locale: id })}
               </p>
