@@ -175,11 +175,13 @@ export default function App() {
             <Outlet />
           ) : (
             <h2 className='font-semibold text-2xl text-center'>
-              Pilih Kota/Kab terlebih dahulu
+              Pilih lokasi terlebih dahulu
             </h2>
           )}
         </div>
-        <Footer />
+        <div className={cn(!locationId && 'fixed bottom-0 inset-x-0')}>
+          <Footer />
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>

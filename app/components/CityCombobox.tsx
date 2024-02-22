@@ -35,8 +35,8 @@ export function CityCombobox({
         >
           {value
             ? locations.find((location) => location.id === value)?.lokasi ??
-              'Pilih Kab/Kota...'
-            : 'Pilih Kab/Kota...'}
+              'Pilih lokasi...'
+            : 'Pilih lokasi...'}
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
@@ -44,7 +44,7 @@ export function CityCombobox({
         <Command>
           <CommandInput placeholder='Search Kab/Kota...' />
           <ScrollArea className='w-[400px] h-[300px]'>
-            <CommandEmpty>Kab/Kota tidak ditemukan</CommandEmpty>
+            <CommandEmpty>Lokasi tidak ditemukan</CommandEmpty>
             <CommandGroup>
               {locations.map((location) => (
                 <CommandItem
