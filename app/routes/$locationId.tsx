@@ -142,49 +142,6 @@ export default function Location() {
       <h2 className='font-semibold text-xl md:text-2xl'>
         Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7
       </h2>
-      <div className='bg-white rounded-2xl md:py-5 shadow-md grid grid-flow-row md:grid-flow-col justify-stretch items-center divide-y-2 md:divide-y-0 md:divide-x-2'>
-        {jadwalArray.map((time, idx) => {
-          if (idx < 6)
-            return (
-              <div
-                className='flex justify-between items-center p-5 md:flex-col space-y-1 text-center'
-                key={time.name}
-              >
-                <p
-                  className={cn(
-                    isPassed(time.time)
-                      ? 'text-lg md:text-xl text-coolGray-800'
-                      : 'text-lg md:text-xl text-lightBlue-800 font-bold'
-                  )}
-                >
-                  {time.name}
-                </p>
-                <p
-                  className={cn(
-                    isPassed(time.time)
-                      ? 'text-lg md:text-xl text-gray-400'
-                      : 'text-lg md:text-xl text-coolGray-800'
-                  )}
-                >
-                  {time.time} WIB
-                </p>
-              </div>
-            );
-        })}
-      </div>
-      <div className='pt-4 flex flex-col md:flex-row gap-2 justify-between'>
-        <h2 className='font-semibold text-xl md:text-2xl'>
-          Waktu Sholat Selanjutnya:
-        </h2>
-        <div className='text-lg md:text-xl'>
-          <span className='font-semibold'>{closestUpcomingAdzan?.name},</span>{' '}
-          <span>
-            {timeLeft?.hours !== 0 && `${timeLeft.hours} Jam :`}{' '}
-            {timeLeft?.minutes !== 0 && `${timeLeft.minutes} Menit :`}{' '}
-            {timeLeft?.seconds} Detik
-          </span>
-        </div>
-      </div>
       <div>
         <div className='flex flex-wrap items-start justify-between md:items-center gap-4'>
           <div className='space-x-4'>
@@ -242,6 +199,49 @@ export default function Location() {
               />
             </Button>
           </div>
+        </div>
+      </div>
+      <div className='bg-white rounded-2xl md:py-5 shadow-md grid grid-flow-row md:grid-flow-col justify-stretch items-center divide-y-2 md:divide-y-0 md:divide-x-2'>
+        {jadwalArray.map((time, idx) => {
+          if (idx < 6)
+            return (
+              <div
+                className='flex justify-between items-center p-5 md:flex-col space-y-1 text-center'
+                key={time.name}
+              >
+                <p
+                  className={cn(
+                    isPassed(time.time)
+                      ? 'text-lg md:text-xl text-coolGray-800'
+                      : 'text-lg md:text-xl text-lightBlue-800 font-bold'
+                  )}
+                >
+                  {time.name}
+                </p>
+                <p
+                  className={cn(
+                    isPassed(time.time)
+                      ? 'text-lg md:text-xl text-gray-400'
+                      : 'text-lg md:text-xl text-coolGray-800'
+                  )}
+                >
+                  {time.time} WIB
+                </p>
+              </div>
+            );
+        })}
+      </div>
+      <div className='pt-4 pb-8 flex flex-col md:flex-row gap-2 justify-between'>
+        <h2 className='font-semibold text-xl md:text-2xl'>
+          Waktu Sholat Selanjutnya:
+        </h2>
+        <div className='text-lg md:text-xl'>
+          <span className='font-semibold'>{closestUpcomingAdzan?.name},</span>{' '}
+          <span>
+            {timeLeft?.hours !== 0 && `${timeLeft.hours} Jam :`}{' '}
+            {timeLeft?.minutes !== 0 && `${timeLeft.minutes} Menit :`}{' '}
+            {timeLeft?.seconds} Detik
+          </span>
         </div>
       </div>
     </div>

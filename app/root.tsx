@@ -122,7 +122,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className='bg-slate-100 font-poppins'>
+      <body className='bg-slate-100 font-poppins flex flex-col min-h-screen'>
         <header
           className={cn(
             'fixed top-0 inset-x-0 py-5 transition-all border-b border-transparent duration-200 ease-in-out z-50',
@@ -181,9 +181,7 @@ export default function App() {
             </h2>
           )}
         </div>
-        <div className={cn(!locationId && 'fixed bottom-0 inset-x-0')}>
-          <Footer />
-        </div>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>

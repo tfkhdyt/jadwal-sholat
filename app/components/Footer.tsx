@@ -2,7 +2,7 @@ import { Link } from '@remix-run/react';
 
 export const Footer = () => {
   return (
-    <footer className='bg-lightBlue-800 inset-x-0 md:mt-14 py-8'>
+    <footer className='bg-lightBlue-800 inset-x-0 mt-auto py-8'>
       <div className='container mx-auto flex flex-wrap justify-between items-center text-white gap-2'>
         <span className='font-semibold text-sm'>
           &copy; {new Date().getFullYear()} Muslim
