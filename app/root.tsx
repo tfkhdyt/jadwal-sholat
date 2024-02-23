@@ -125,8 +125,8 @@ export default function App() {
       <body className='bg-slate-100 font-poppins flex flex-col min-h-screen'>
         <header
           className={cn(
-            'fixed top-0 inset-x-0 py-5 transition-all border-b border-transparent duration-200 ease-in-out z-50',
-            y && y >= 50 && 'bg-black/25 backdrop-blur-lg border-slate-800/25'
+            'fixed top-0 inset-x-0 py-5 transition-all border-b border-transparent duration-300 ease-in-out z-50',
+            y && y >= 50 && 'bg-black/20 backdrop-blur-xl border-slate-800/25'
           )}
         >
           <div className='container mx-auto'>
@@ -135,7 +135,7 @@ export default function App() {
               alt='Logo'
               width={134}
               height={54}
-              className='h-8 md:h-12 w-auto'
+              className='h-6 md:h-12 w-auto'
             />
           </div>
         </header>
