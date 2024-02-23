@@ -126,7 +126,9 @@ export default function App() {
         <header
           className={cn(
             'fixed top-0 inset-x-0 py-5 transition-all border-b border-transparent duration-300 ease-in-out z-50',
-            y && y >= 50 && 'bg-black/20 backdrop-blur-xl border-slate-800/25'
+            y &&
+              y >= 50 &&
+              'bg-lightBlue-800/95 backdrop-blur border-slate-800/25'
           )}
         >
           <div className='container mx-auto'>
