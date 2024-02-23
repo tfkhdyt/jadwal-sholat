@@ -172,7 +172,7 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div className='container mx-auto relative -top-16 md:top-0'>
+        <div className='container mx-auto relative -top-20 md:-top-6'>
           {locationId || params.locationId ? (
             <Outlet />
           ) : (

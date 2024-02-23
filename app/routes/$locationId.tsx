@@ -201,7 +201,7 @@ export default function Location() {
           </div>
         </div>
       </div>
-      <div className='bg-white rounded-2xl md:py-5 shadow-md grid grid-flow-row md:grid-flow-col justify-stretch items-center divide-y-2 md:divide-y-0 md:divide-x-2'>
+      <div className='bg-white rounded-2xl md:py-6 shadow-md grid grid-flow-row md:grid-flow-col justify-stretch items-center divide-y-2 md:divide-y-0 md:divide-x-2'>
         {jadwalArray.map((time, idx) => {
           if (idx < 6)
             return (
@@ -231,7 +231,7 @@ export default function Location() {
             );
         })}
       </div>
-      <div className='pt-4 pb-8 flex flex-col md:flex-row gap-2 justify-between'>
+      <div className='py-4 flex flex-col md:flex-row gap-2 justify-between'>
         <h2 className='font-semibold text-xl md:text-2xl'>
           Waktu Sholat Selanjutnya:
         </h2>
