@@ -17,7 +17,7 @@ export function useClosestAdzan(jadwal: Jadwal[]) {
       if (closestAdzan) {
         setClosestUpcomingAdzan(closestAdzan);
       }
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [jadwal, closestUpcomingAdzan]);
