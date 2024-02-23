@@ -1,6 +1,7 @@
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
+  MetaFunction,
   json,
   redirect,
 } from '@remix-run/node';
@@ -53,7 +54,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     throw json({ error: 'Gagal untuk mengambil data jadwal sholat' });
   }
 
-  return json({ jadwal: data.data, date: today });
+  return json({
+    jadwal: data.data,
+    date: today,
+    locationName: data.data.lokasi,
+  });
+};
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: `Jadwal Sholat - ${toCapitalize(data?.locationName ?? '')}` },
+    { name: 'description', content: 'Jadwal Sholat' },
+  ];
 };
 
 const actionSchema = z.object({
