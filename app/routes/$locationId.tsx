@@ -149,7 +149,7 @@ export default function Location() {
           </div>
           <div className='space-x-4'>
             <Button
-              className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
+              className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
               onClick={() =>
                 submit(
                   { _action: 'PREVIOUS_DAY' },
@@ -158,15 +158,11 @@ export default function Location() {
               }
               title='Hari sebelumnya'
             >
-              <ChevronLeftIcon
-                className='text-lightBlue-800 group-hover:text-slate-100'
-                size={32}
-                strokeWidth={1.5}
-              />
+              <ChevronLeftIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
             </Button>
             {new Date().getDate() !== new Date(date).getDate() && (
               <Button
-                className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
+                className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
                 onClick={() =>
                   submit(
                     { _action: 'TODAY' },
@@ -175,15 +171,11 @@ export default function Location() {
                 }
                 title='Kembali ke hari ini'
               >
-                <UndoIcon
-                  className='text-lightBlue-800 group-hover:text-slate-100'
-                  size={32}
-                  strokeWidth={1.5}
-                />
+                <UndoIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
               </Button>
             )}
             <Button
-              className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
+              className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
               onClick={() =>
                 submit(
                   { _action: 'NEXT_DAY' },
@@ -192,11 +184,7 @@ export default function Location() {
               }
               title='Hari selanjutnya'
             >
-              <ChevronRightIcon
-                className='text-lightBlue-800 group-hover:text-slate-100'
-                size={32}
-                strokeWidth={1.5}
-              />
+              <ChevronRightIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
             </Button>
           </div>
         </div>

@@ -21,14 +21,10 @@ export const DatePicker = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-7 rounded-lg'
+          className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
           title='Pilih tanggal'
         >
-          <CalendarIcon
-            className='text-lightBlue-800 group-hover:text-slate-100'
-            size={32}
-            strokeWidth={1.5}
-          />
+          <CalendarIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-auto p-0'>
