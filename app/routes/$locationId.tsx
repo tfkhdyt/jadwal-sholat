@@ -113,7 +113,7 @@ export default function Location() {
   );
   const { closestUpcomingAdzan, timeRemainingToClosestAdzan: timeLeft } = useClosestAdzan(jadwalArray);
   const submit = useSubmit();
-  const [currentDate, setCurrentDate] = useState<Date | undefined>();
+  const [currentDate, setCurrentDate] = useState<Date | undefined>(new Date(date));
 
   useEffect(() => {
     if (currentDate) {
@@ -137,7 +137,7 @@ export default function Location() {
             >
               <ChevronLeftIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
             </Button>
-            {new Date().getDate() !== new Date(date).getDate() && (
+            {new Date().toISOString().slice(0, 10) !== new Date(date).toISOString().slice(0, 10) && (
               <Button
                 className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
                 onClick={() => submit({ _action: 'TODAY' }, { method: 'PATCH', preventScrollReset: true })}
