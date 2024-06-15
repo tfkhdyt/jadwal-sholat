@@ -1,10 +1,4 @@
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-  json,
-  redirect,
-} from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction, json, redirect } from '@remix-run/node';
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { format } from 'date-fns';
 import { ChevronLeftIcon, ChevronRightIcon, UndoIcon } from 'lucide-react';
@@ -40,14 +34,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { searchParams } = new URL(request.url);
   const dateFromSearchParams = searchParams.get('date');
 
-  const today = dateFromSearchParams
-    ? new Date(dateFromSearchParams)
-    : new Date();
+  const today = dateFromSearchParams ? new Date(dateFromSearchParams) : new Date();
 
   const res = await fetch(
-    `https://api.myquran.com/v2/sholat/jadwal/${
-      params.locationId
-    }/${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+    `https://api.myquran.com/v2/sholat/jadwal/${params.locationId}/${today.getFullYear()}-${
+      today.getMonth() + 1
+    }-${today.getDate()}`
   );
   const data: JadwalResponse = await res.json();
   if (!res.ok || !data.status) {
@@ -80,9 +72,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const { searchParams } = new URL(request.url);
   const dateFromSearchParams = searchParams.get('date');
 
-  const today = dateFromSearchParams
-    ? new Date(dateFromSearchParams)
-    : new Date();
+  const today = dateFromSearchParams ? new Date(dateFromSearchParams) : new Date();
 
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -94,28 +84,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   switch (result.data._action) {
     case 'NEXT_DAY':
-      return redirect(
-        `/${params.locationId}?date=${format(
-          today.setDate(today.getDate() + 1),
-          'yyyy-MM-dd'
-        )}`
-      );
+      return redirect(`/${params.locationId}?date=${format(today.setDate(today.getDate() + 1), 'yyyy-MM-dd')}`);
     case 'PREVIOUS_DAY':
-      return redirect(
-        `/${params.locationId}?date=${format(
-          today.setDate(today.getDate() - 1),
-          'yyyy-MM-dd'
-        )}`
-      );
+      return redirect(`/${params.locationId}?date=${format(today.setDate(today.getDate() - 1), 'yyyy-MM-dd')}`);
     case 'TODAY':
       return redirect(`/${params.locationId}`);
     case 'SET_DATE':
-      return redirect(
-        `/${params.locationId}?date=${format(
-          result.data.date ?? '',
-          'yyyy-MM-dd'
-        )}`
-      );
+      return redirect(`/${params.locationId}?date=${format(result.data.date ?? '', 'yyyy-MM-dd')}`);
     default:
       return null;
   }
@@ -123,6 +98,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function Location() {
   const { jadwal, date } = useLoaderData<typeof loader>();
+
   const jadwalArray = useMemo(
     () => [
       { name: 'Subuh', time: jadwal.jadwal.subuh },
@@ -131,29 +107,23 @@ export default function Location() {
       { name: 'Ashar', time: jadwal.jadwal.ashar },
       { name: 'Maghrib', time: jadwal.jadwal.maghrib },
       { name: 'Isya', time: jadwal.jadwal.isya },
-      { name: 'Subuh', time: jadwal.jadwal.subuh },
+      { name: 'Subuh', time: '23:59' },
     ],
     [jadwal]
   );
-  const { closestUpcomingAdzan, timeRemainingToClosestAdzan: timeLeft } =
-    useClosestAdzan(jadwalArray);
+  const { closestUpcomingAdzan, timeRemainingToClosestAdzan: timeLeft } = useClosestAdzan(jadwalArray);
   const submit = useSubmit();
   const [currentDate, setCurrentDate] = useState<Date | undefined>();
 
   useEffect(() => {
     if (currentDate) {
-      submit(
-        { _action: 'SET_DATE', date: currentDate.toString() },
-        { method: 'PATCH', preventScrollReset: true }
-      );
+      submit({ _action: 'SET_DATE', date: currentDate.toString() }, { method: 'PATCH', preventScrollReset: true });
     }
   }, [currentDate, submit]);
 
   return (
     <div className='space-y-6'>
-      <h2 className='font-semibold text-xl md:text-2xl'>
-        Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7
-      </h2>
+      <h2 className='font-semibold text-xl md:text-2xl'>Jadwal Sholat {toCapitalize(jadwal.lokasi)}, GMT +7</h2>
       <div>
         <div className='flex flex-wrap items-start justify-between md:items-center gap-4'>
           <div className='space-x-4'>
@@ -162,12 +132,7 @@ export default function Location() {
           <div className='space-x-4'>
             <Button
               className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
-              onClick={() =>
-                submit(
-                  { _action: 'PREVIOUS_DAY' },
-                  { method: 'PATCH', preventScrollReset: true }
-                )
-              }
+              onClick={() => submit({ _action: 'PREVIOUS_DAY' }, { method: 'PATCH', preventScrollReset: true })}
               title='Hari sebelumnya'
             >
               <ChevronLeftIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
@@ -175,12 +140,7 @@ export default function Location() {
             {new Date().getDate() !== new Date(date).getDate() && (
               <Button
                 className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
-                onClick={() =>
-                  submit(
-                    { _action: 'TODAY' },
-                    { method: 'PATCH', preventScrollReset: true }
-                  )
-                }
+                onClick={() => submit({ _action: 'TODAY' }, { method: 'PATCH', preventScrollReset: true })}
                 title='Kembali ke hari ini'
               >
                 <UndoIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
@@ -188,12 +148,7 @@ export default function Location() {
             )}
             <Button
               className='bg-transparent border-2 border-lightBlue-800 hover:bg-lightBlue-800 group py-6 rounded-xl'
-              onClick={() =>
-                submit(
-                  { _action: 'NEXT_DAY' },
-                  { method: 'PATCH', preventScrollReset: true }
-                )
-              }
+              onClick={() => submit({ _action: 'NEXT_DAY' }, { method: 'PATCH', preventScrollReset: true })}
               title='Hari selanjutnya'
             >
               <ChevronRightIcon className='text-lightBlue-800 group-hover:text-slate-100 h-6 w-6' />
@@ -205,10 +160,7 @@ export default function Location() {
         {jadwalArray.map((time, idx) => {
           if (idx < 6)
             return (
-              <div
-                className='flex justify-between items-center p-5 md:flex-col space-y-1 text-center'
-                key={time.name}
-              >
+              <div className='flex justify-between items-center p-5 md:flex-col space-y-1 text-center' key={time.name}>
                 <p
                   className={cn(
                     isPassed(time.time)
@@ -220,9 +172,7 @@ export default function Location() {
                 </p>
                 <p
                   className={cn(
-                    isPassed(time.time)
-                      ? 'text-lg md:text-xl text-gray-400'
-                      : 'text-lg md:text-xl text-coolGray-800'
+                    isPassed(time.time) ? 'text-lg md:text-xl text-gray-400' : 'text-lg md:text-xl text-coolGray-800'
                   )}
                 >
                   {time.time} WIB
@@ -232,15 +182,12 @@ export default function Location() {
         })}
       </div>
       <div className='py-4 flex flex-col md:flex-row gap-2 justify-between'>
-        <h2 className='font-semibold text-xl md:text-2xl'>
-          Waktu Sholat Selanjutnya:
-        </h2>
+        <h2 className='font-semibold text-xl md:text-2xl'>Waktu Sholat Selanjutnya:</h2>
         <div className='text-lg md:text-xl'>
           <span className='font-semibold'>{closestUpcomingAdzan?.name},</span>{' '}
           <span>
             {timeLeft?.hours !== 0 && `${timeLeft.hours} Jam :`}{' '}
-            {timeLeft?.minutes !== 0 && `${timeLeft.minutes} Menit :`}{' '}
-            {timeLeft?.seconds} Detik
+            {timeLeft?.minutes !== 0 && `${timeLeft.minutes} Menit :`} {timeLeft?.seconds} Detik
           </span>
         </div>
       </div>

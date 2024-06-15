@@ -33,8 +33,7 @@ export function getClosestAdzan(jadwalArray: Jadwal[]) {
 
   for (const jadwal of jadwalArray) {
     const [jamJadwal, menitJadwal] = jadwal.time.split(':');
-    const waktuJadwalDalamMenit =
-      parseInt(jamJadwal) * 60 + parseInt(menitJadwal);
+    const waktuJadwalDalamMenit = parseInt(jamJadwal) * 60 + parseInt(menitJadwal);
     const selisih = waktuJadwalDalamMenit - waktuSekarangDalamMenit;
 
     if (selisih > 0 && selisih < selisihTerdekat) {
@@ -46,7 +45,7 @@ export function getClosestAdzan(jadwalArray: Jadwal[]) {
   return jadwalTerdekat;
 }
 
-export function timeRemaining(targetTime: string | null) {
+export function timeRemaining(targetTime: string | null, subuh?: string) {
   if (!targetTime) {
     return { hours: 0, minutes: 0, seconds: 0 };
   }
@@ -63,19 +62,21 @@ export function timeRemaining(targetTime: string | null) {
   const now = new Date();
 
   // Calculate difference in milliseconds
-  const elapsedMilliseconds = targetDate.getTime() - now.getTime();
+  let elapsedMilliseconds = targetDate.getTime() - now.getTime();
 
   // Handle negative and zero time differences
   if (elapsedMilliseconds <= 0) {
     return { hours: 0, minutes: 0, seconds: 0 };
   }
 
-  const hours = Math.floor(
-    (elapsedMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
-  const minutes = Math.floor(
-    (elapsedMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
-  );
+  if (targetTime === '23:59' && subuh) {
+    const [jam, menit] = subuh.split(':');
+    elapsedMilliseconds += Number(jam) * 60 * 60 * 1000;
+    elapsedMilliseconds += Number(menit) * 60 * 1000;
+  }
+
+  const hours = Math.floor((elapsedMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((elapsedMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((elapsedMilliseconds / 1000) % 60);
 
   // Return object with remaining time
